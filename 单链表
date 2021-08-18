@@ -1,0 +1,125 @@
+#include<stdio.h>
+#include<stdlib.h> 
+
+struct Node
+{
+	int value;
+	struct Node *next;
+};
+
+void insertNode(struct Node **head,int value)
+{
+	struct Node *previous; //current的前一个指针 
+	struct Node *current; //在new没有插进来室previous的后一个指针 
+	struct Node *new;  //新插入的数据
+	
+	current = *head; //头指针 
+	previous = NULL; 
+	while(current != NULL && current->value < value)  // 如果current是空的单链表就退出循环，不是末尾 并且是小于插进来的值进行循环推前
+	{
+		previous = current;  //current 往前走变成previous 
+		current = current->next;
+	} 
+	
+	new = (struct Node *)malloc(sizeof(struct Node));
+	if (new == NULL)
+	{
+		printf("内存分配失败！ \n");
+		exit(1);
+	 }
+	 
+	 new->value = value; //等于传进来的值
+	 new->next = current; //new的下一个值就是等于比他打一个数的current
+	 
+	 if (previous == NULL) //直接成为头指针毫无数据直接插入 
+	 {
+	 	*head = new;//它为头指针，newc插入变化头指针
+	 }
+	 else
+	 {
+	 	previous->next = new; //后面是null并且刚好在最后一个的前一位就插到前一个的后面 
+	  }
+	  
+	  free(new); 
+}
+
+void printNode(struct Node *head)
+{
+	struct Node *current;
+	
+	current = head; //作为头指针的值一个个输出 
+	while(current != NULL) //不为最后一个都输出 
+	{
+		printf("%d",current->value); //输出每一个值 
+		current = current->next;  //输出完前一个后就把后面的赋值来进行循环输出 
+	}
+	
+	putchar('\n');
+}
+
+void deletNode(struct Node **head, int value)
+{
+	struct Node *previous; //两个定义与上面的是不重复的，局部变量是过了程序后被清除的，不会出现重复 
+	struct Node *current;
+	
+	current = *head; //头指针 
+	previous = NULL; 
+	while(current != NULL && current->value != value)  // current不为最后一个并且不是要找的值时进入循环往前一个一个推值直到找到那个值退出 
+	{
+		previous = current;  //current 往前走变成previous 
+		current = current->next;
+	}
+	
+	if (current == NULL) //完全是空链表，或者是找完链表内的值没有匹配的 
+	{
+		printf("找不到匹配的节点! \n");
+		return ;
+	 }
+	 else  //找到这个值 
+	 {
+	 	if (previous == NULL) //找到的值在开头 
+	 	{
+	 		*head = current->next; //删除前一个后把后面一个成员变为头指针 
+	 		
+		}
+		 else //不为开头时 
+		 {
+		 	previous->next = current->next; //把current的下一个值变成previous的下一个值取代了原本的current 
+		 }
+		 free(current);
+	  } 
+}
+ 
+int main(void)
+{
+	struct Node *head = NULL;
+	int input;
+	
+	printf("开始测试插入整数...... \n"); 
+	while(1)
+	{
+		printf("请输入一个整数（输入-1表示结束：");
+		scanf("%d",&input);
+		if(input==-1)
+		{
+			break;
+		}
+		insertNOde(&head,input);
+		printNode(head);
+	}
+	
+	printf("开始测试删除整数...... \n"); 
+	while(1)
+	{
+		printf("请输入一个整数（输入-1表示结束：");
+		scanf("%d",&input);
+		if(input==-1)
+		{
+			break;
+		}
+		deletNOde(&head,input);
+		printNode(head);
+	}
+	
+	return 0;
+}
